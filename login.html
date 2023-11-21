@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style> 
+        body{text-align: center; background-color: aqua; color: black;}
+    </style>
+
+</head>
+<body>
+    <!--the sign in/up page-->
+    <div id="authForm">
+        <h2>sing up or sign in</h2>
+        <input type="email" placeholder="email" id="userEmail">
+        <input type="password" placeholder="password" id="userPassword">
+        <button id="signInButton">sign in</button>
+        <button id="signUpButton">sign up</button>
+    </div>
+
+    <!--the page after the log in-->
+    <div id="secretContent">
+        <h3>this is top secret information that you can see</h3>
+        <h2>authenticated</h2>
+        <button id="signOutButton">sign out</button>
+
+    </div>
+
+    <script type="module">
+        /*
+            FIREBASE AUTHENTICATION
+        */
+
+        // Import the functions you need from the SDKs you need
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js";
+        // Import the functions of authentication from the firebase authentication library
+        import {
+            getAuth,//letting us to get stated getting authenticated
+            createUserWithEmailAndPassword,//create user using email
+            signInWithEmailAndPassword,//sign in functionality
+            onAuthStateChange,//to know if the user is signed in or not
+            signOut//signout
+        } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
+        // TODO: Add SDKs for Firebase products that you want to use
+        // https://firebase.google.com/docs/web/setup#available-libraries
+      
+        // Your web app's Firebase configuration
+        const firebaseConfig = {
+          apiKey: "AIzaSyDZaXN5jLM8eefqSvSnnKh4a6fE4exyHy8",
+          authDomain: "authentication-app-cfb97.firebaseapp.com",
+          projectId: "authentication-app-cfb97",
+          storageBucket: "authentication-app-cfb97.appspot.com",
+          messagingSenderId: "631670698903",
+          appId: "1:631670698903:web:ed25f2c333cafa48038ad2"
+        };
+      
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app)//the authentication configuration for my app 
+
+        /*
+            CODE FOR THE WEB-PAGE
+        */
+
+        const userEmail = document.querySelector("#userEmail"); //get email element from the doc, # says that we digg for an id
+        const userPassword = document.querySelector("#userPassword"); //get password element from the doc
+        const authForm = document.querySelector("#authForm"); //get the login form data
+        const secretContent = document.querySelector("#secretContent"); //the page after the login
+        const signInButton = document.querySelector("#signInButton"); //sign in button
+        const signUpButton = document.querySelector("#signUpButton"); //sign up button
+        const signOutButton = document.querySelector("#signOutButton"); //sign out button
+
+        secretContent.style.display = 'none';//hiding the login page, 
+
+        /*
+            sign up methode
+        */
+        const userSignUp = async() => {//the events that are going to happened when sign up is been clicked
+            const signUpEmail = userEmail.value; //gets the email value the user types, not yhe entire html element 
+            const signUpPassword = userPassword.value; //gets the password value the user types 
+            createUserWithEmailAndPassword(auth, signUpEmail, signUpPassword)//create a user that its email and password been stored in my firebase
+            .then((userCredentioal) => { //after getting the info do...
+                const user = userCredentioal.user; //create a user with the credentials that were given
+                console.log(user); //print the user data to check what I got
+                alert("Youraccount has been created!"); //pop up that will tell the user that the sign up worked
+            }) 
+            /*we create a user with email and password,
+             we get the useres credentials, 
+             we put it in the console, success message*/
+            
+             .catch((error) => {
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode + errorMessage);
+             })
+            /*if something goes wrong it would tell us the error*/ 
+        }
+
+        /*
+            sign in methode
+        */
+        const userSignIn = async() => {
+            const signInEmail = userEmail.value;
+            const signInPassword = userPassword.value
+            signInWithEmailAndPassword(auth, signInEmail, signInPassword).then((userCredentioal) => {
+                const user = userCredentioal.user;//gets the values from the elements to sign in
+                alert("You have signed in successfuly!"); //when successful this pop up
+            })
+            .catch((error) => { //incase of a problem this will pop up
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                console.log(errorCode + errorMessage)
+            })
+        }
+
+        /*
+            checking the authentication state,
+            if login successful goes to next page
+        */
+        const chechAuthState = async() =>{
+            onAuthStateChanged(auth,/*passing the authentication configuration*/
+                                user => { //checking th authentication state of a specific user
+                                    if(user){ //checks if the user exists and signed in then we good to go
+                                        authForm.style.display = 'none'; //make the form disappear
+                                        secretContent.style.display = 'block'; //make the secret content appear
+                                    }else{
+                                        authForm.style.display = 'block'; //make the form disappear
+                                        secretContent.style.display = 'none'; //make the secret content appear
+                                    }
+            })
+
+        }
+
+        const userSignOut = async() => {
+            await signOut(auth); /*wait for the event to happen,
+                                    if the function is called the firebase function will logout the user*/
+        }
+
+        ceckAuthState(); //constently going to call the auth-state function and will check if the user is signed in, signed out
+
+        signUpButton.addEventListener('click', userSignUp); //calling the sign up function
+        signInButton.addEventListener('click', userSignIn); //calling the sign in function
+        signOutButton.addEventListener('click', userSignOut); //calling the sign put function
+
+
+    </script>
+</body>
+</html>
