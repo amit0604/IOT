@@ -3,13 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <style> 
-        body{text-align: center; background-color: aqua; color: black;}
+    <title>PUNCHED! - LOGIN</title>
+    <link rel="stylesheet" href="/additional/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+        *{
+            /*background-color: #797979;*/
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body{
+            background: linear-gradient(90deg, #fff 0%, #c5c5c5 51%, #fff 75%);
+            /* text-align: center;*/
+        }
+
+        #authForm{
+            margin: auto;
+            width: 50%;
+            /* border: 3px solid green; */
+            padding: 10px;
+            text-align: center;
+        }
+
+        #authForm input{
+            border-radius: 3rem;
+            border: none;
+            margin-bottom: 1rem;
+            
+        }
+
+        #authForm button{
+            margin: auto;
+            width: 50%;
+            border: none;
+            border-radius: 3rem;
+            padding: 10px;
+            margin-bottom: .5rem;
+            background-color: rgb(159, 159, 159);
+            color: white;   
+        }
+
+        #authForm button:hover{
+            cursor: pointer;
+        }
+
+        #secretContent{
+            margin: auto;
+            width: 50%;
+            border: none;
+            padding: 10px;
+            text-align: center;
+        }
+
+        #secretContent button{
+            margin: auto;
+            width: 50%;
+            border: none;
+            border-radius: 3rem;
+            padding: 10px;
+            margin-bottom: .5rem;
+            background-color: rgb(159, 159, 159);
+            color: white;
+            
+        }
+        
+        #secretContent button:hover{
+            cursor: pointer;
+        }
+
     </style>
 
 </head>
 <body>
+    <nav class="navbar">
+        <div class="topnav" id="myTopnav">
+        <a href="/html/index.html" class="active">PUNCHED!</a>
+        <a href="javascript:void(0);" class="icon" onclick="myFunction()">
+        <i class="fa fa-bars"></i>
+        </a>
+        </div>
+    </nav>
     <!--the sign in/up page-->
     <div id="authForm">
         <h2>sing up or sign in</h2>
@@ -27,6 +101,12 @@
 
     </div>
 
+    <!--
+        =======================================================
+                                JAVA-SCRIPT
+        =======================================================
+    -->
+
     <script type="module">
         /*
             FIREBASE AUTHENTICATION
@@ -39,7 +119,7 @@
             getAuth,//letting us to get stated getting authenticated
             createUserWithEmailAndPassword,//create user using email
             signInWithEmailAndPassword,//sign in functionality
-            onAuthStateChange,//to know if the user is signed in or not
+            onAuthStateChanged,//to know if the user is signed in or not
             signOut//signout
         } from "https://www.gstatic.com/firebasejs/10.6.0/firebase-auth.js";
         // TODO: Add SDKs for Firebase products that you want to use
@@ -71,7 +151,7 @@
         const signUpButton = document.querySelector("#signUpButton"); //sign up button
         const signOutButton = document.querySelector("#signOutButton"); //sign out button
 
-        secretContent.style.display = 'none';//hiding the login page, 
+        document.getElementById("secretContent").style.display = 'none';//hiding the login page, 
 
         /*
             sign up methode
@@ -118,31 +198,31 @@
             checking the authentication state,
             if login successful goes to next page
         */
-        const chechAuthState = async() =>{
+        const checkAuthState = async() =>{
             onAuthStateChanged(auth,/*passing the authentication configuration*/
                                 user => { //checking th authentication state of a specific user
                                     if(user){ //checks if the user exists and signed in then we good to go
-                                        authForm.style.display = 'none'; //make the form disappear
-                                        secretContent.style.display = 'block'; //make the secret content appear
+                                        document.getElementById("authForm").style.display = 'none'; //make the form disappear
+                                        document.getElementById("secretContent").style.display = 'block'; //make the secret content appear
                                     }else{
-                                        authForm.style.display = 'block'; //make the form disappear
-                                        secretContent.style.display = 'none'; //make the secret content appear
+                                        document.getElementById("authForm").style.display = 'block'; //make the form disappear
+                                        document.getElementById("secretContent").style.display = 'none'; //make the secret content appear
                                     }
             })
 
         }
-
+        
         const userSignOut = async() => {
             await signOut(auth); /*wait for the event to happen,
-                                    if the function is called the firebase function will logout the user*/
+            if the function is called the firebase function will logout the user*/
         }
-
-        ceckAuthState(); //constently going to call the auth-state function and will check if the user is signed in, signed out
-
+        
+        checkAuthState(); //constently going to call the auth-state function and will check if the user is signed in, signed out
+        
         signUpButton.addEventListener('click', userSignUp); //calling the sign up function
         signInButton.addEventListener('click', userSignIn); //calling the sign in function
         signOutButton.addEventListener('click', userSignOut); //calling the sign put function
-
+        
 
     </script>
 </body>
